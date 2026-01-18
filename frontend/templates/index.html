@@ -1,130 +1,177 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3DModelQuickCalc</title>
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- HTMX -->
-    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
-    
-    <style>
-        .loader {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #3b82f6;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-    </style>
-</head>
-<body class="bg-gray-50 min-h-screen">
-    <!-- Header -->
-    <header class="bg-white shadow">
-        <div class="container mx-auto px-4 py-4">
-            <div class="flex justify-between items-center">
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="text-center mb-12">
+    <h2 class="text-4xl font-bold text-gray-800 mb-4">3D Parts Calculator</h2>
+    <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+        Upload STL files, select materials, get instant calculations
+    </p>
+</div>
+
+<!-- Status Panel -->
+<!-- Status Panel -->
+<div class="max-w-md mx-auto mb-10">
+    <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+            <span class="w-3 h-3 bg-green-500 rounded-full mr-2"></span>
+            System Status
+        </h3>
+        
+        <!-- Контейнер для статуса -->
+        <div id="status-container">
+            <!-- HTMX загрузит сюда статус -->
+            <div id="status-loader" 
+                 hx-get="/health" 
+                 hx-trigger="load"
+                 hx-swap="innerHTML"
+                 hx-target="#status-container">
                 <div class="flex items-center space-x-3">
-                    <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                        <span class="text-white font-bold">3D</span>
-                    </div>
-                    <h1 class="text-2xl font-bold text-gray-800">3DModelQuickCalc</h1>
-                </div>
-                <div class="flex space-x-2">
-                    <button class="px-4 py-2 bg-gray-100 rounded-lg">👤 User</button>
-                    <button class="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg">⚙️ Settings</button>
+                    <div class="loader"></div>
+                    <span class="text-gray-600">Checking API status...</span>
                 </div>
             </div>
         </div>
-    </header>
-
-    <!-- Main Content -->
-    <main class="container mx-auto px-4 py-8">
-        <div class="text-center mb-8">
-            <h2 class="text-3xl font-bold text-gray-800 mb-2">3D Parts Calculator</h2>
-            <p class="text-gray-600">Upload STL files, select materials, get instant calculations</p>
+        
+        <div class="mt-6 pt-6 border-t">
+            <button class="w-full px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition mb-3"
+                    hx-get="/api/config/materials"
+                    hx-target="#materials-result"
+                    hx-indicator="#materials-loader">
+                📋 Load Materials
+            </button>
+            <div id="materials-loader" class="htmx-indicator hidden">
+                <div class="flex items-center justify-center space-x-2">
+                    <div class="loader w-4 h-4"></div>
+                    <span class="text-sm text-gray-500">Loading materials...</span>
+                </div>
+            </div>
+            <div id="materials-result"></div>
         </div>
+    </div>
+</div>
 
-        <!-- Status Panel -->
-        <div class="max-w-md mx-auto mb-8">
-            <div class="bg-white rounded-lg shadow p-6">
-                <h3 class="text-lg font-semibold mb-4">System Status</h3>
-                <div id="status" hx-get="/health" hx-trigger="load" hx-swap="innerHTML">
-                    <div class="flex items-center space-x-2">
-                        <div class="loader"></div>
-                        <span>Checking API status...</span>
-                    </div>
+<!-- Feature Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 max-w-6xl mx-auto">
+    <!-- Upload Card -->
+    <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+        <div class="text-5xl mb-4 text-center">📁</div>
+        <h3 class="text-xl font-semibold text-gray-800 mb-3">Upload STL</h3>
+        <p class="text-gray-600 mb-6">Upload your 3D model files in STL format</p>
+        <button class="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+            Upload File
+        </button>
+    </div>
+
+    <!-- Calculate Card -->
+    <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+        <div class="text-5xl mb-4 text-center">🧮</div>
+        <h3 class="text-xl font-semibold text-gray-800 mb-3">Calculate</h3>
+        <p class="text-gray-600 mb-6">Get instant calculations of volume, weight, and cost</p>
+        <button class="w-full px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
+            Quick Calculate
+        </button>
+    </div>
+
+    <!-- Analyze Card -->
+    <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+        <div class="text-5xl mb-4 text-center">📊</div>
+        <h3 class="text-xl font-semibold text-gray-800 mb-3">Analyze</h3>
+        <p class="text-gray-600 mb-6">Advanced analysis and comparison tools</p>
+        <button class="w-full px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">
+            View Analysis
+        </button>
+    </div>
+</div>
+
+<!-- Dynamic Content Area -->
+<div id="dynamic-content" class="mt-8">
+    <!-- Content loaded via HTMX will appear here -->
+</div>
+{% endblock %}
+
+{% block scripts %}
+
+
+<script>
+// Функция для красивого отображения JSON статуса
+// Функция для красивого отображения JSON статуса
+function formatHealthStatus(jsonData) {
+    try {
+        const data = typeof jsonData === 'string' ? JSON.parse(jsonData) : jsonData;
+        
+        // Создаём красивый HTML
+        return `
+            <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                    <span class="font-medium">Service:</span>
+                    <span class="px-2 py-1 bg-green-100 text-green-800 rounded text-sm">${data.service}</span>
                 </div>
                 
-                <div class="mt-4 pt-4 border-t">
-                    <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                            hx-get="/api/config/materials"
-                            hx-target="#materials">
-                        📋 Load Materials Config
-                    </button>
-                    <div id="materials" class="mt-2"></div>
+                <div class="flex items-center justify-between">
+                    <span class="font-medium">Status:</span>
+                    <span class="px-2 py-1 bg-green-100 text-green-800 rounded text-sm font-semibold">
+                        ${data.status.toUpperCase()}
+                    </span>
                 </div>
-            </div>
-        </div>
-
-        <!-- Quick Actions -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-            <div class="bg-white rounded-lg shadow p-6 text-center">
-                <div class="text-4xl mb-4">📁</div>
-                <h3 class="text-xl font-semibold mb-2">Upload STL</h3>
-                <p class="text-gray-600 mb-4">Upload your 3D model files</p>
-                <button class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 w-full">
-                    Upload File
-                </button>
-            </div>
-
-            <div class="bg-white rounded-lg shadow p-6 text-center">
-                <div class="text-4xl mb-4">🧮</div>
-                <h3 class="text-xl font-semibold mb-2">Calculate</h3>
-                <p class="text-gray-600 mb-4">Get volume, weight, cost</p>
-                <button class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 w-full">
-                    Quick Calculate
-                </button>
-            </div>
-
-            <div class="bg-white rounded-lg shadow p-6 text-center">
-                <div class="text-4xl mb-4">📊</div>
-                <h3 class="text-xl font-semibold mb-2">Analyze</h3>
-                <p class="text-gray-600 mb-4">Advanced analysis tools</p>
-                <button class="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 w-full">
-                    View Analysis
-                </button>
-            </div>
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-white border-t mt-12">
-        <div class="container mx-auto px-4 py-6">
-            <div class="text-center text-gray-600">
-                © 2026 3DModelQuickCalc | Architectural Demo v0.1.0
-                <div class="mt-2">
-                    <a href="/docs" target="_blank" class="text-blue-600 hover:underline">API Docs</a> |
-                    <a href="/health" class="text-green-600 hover:underline">Health Check</a> |
-                    <a href="#" class="text-gray-600 hover:underline">GitHub</a>
+                
+                <div class="flex items-center justify-between">
+                    <span class="font-medium">Version:</span>
+                    <span class="text-gray-600">${data.version}</span>
                 </div>
+                
+                <div class="flex items-center justify-between">
+                    <span class="font-medium">Last check:</span>
+                    <span class="text-gray-600 text-sm">${new Date().toLocaleTimeString()}</span>
+                </div>
+                
+                ${data.components ? `
+                <div class="pt-3 border-t">
+                    <h4 class="font-medium mb-2">Components:</h4>
+                    <div class="grid grid-cols-2 gap-2">
+                        ${Object.entries(data.components).map(([name, state]) => `
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm capitalize">${name.replace('_', ' ')}:</span>
+                                <span class="text-sm px-2 py-1 rounded
+                                    ${state === 'operational' ? 'bg-green-100 text-green-800' :
+                                      state === 'ready' ? 'bg-blue-100 text-blue-800' :
+                                      state === 'not_configured' ? 'bg-gray-100 text-gray-800' :
+                                      'bg-yellow-100 text-yellow-800'}">
+                                    ${state.replace('_', ' ')}
+                                </span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                ` : ''}
             </div>
-        </div>
-    </footer>
+        `;
+    } catch (error) {
+        return `<div class="text-red-600">Error: ${error.message}</div>`;
+    }
+}
 
-    <!-- HTMX Script -->
-    <script>
-        // Auto-refresh status every 30 seconds
-        setInterval(() => {
-            htmx.trigger('#status', 'load');
-        }, 30000);
-    </script>
-</body>
-</html>
+// Обработчик HTMX для форматирования ответа
+document.addEventListener('htmx:afterSwap', function(event) {
+    const target = event.detail.target;
+    
+    // Если это контейнер статуса и в нём JSON
+    if (target.id === 'status-container') {
+        const content = target.innerHTML.trim();
+        
+        // Проверяем, это JSON или уже HTML
+        if (content.startsWith('{') && content.includes('"status"')) {
+            target.innerHTML = formatHealthStatus(content);
+        }
+    }
+});
+
+// Авто-обновление статуса каждые 30 секунд
+setInterval(() => {
+    const statusLoader = document.getElementById('status-loader');
+    if (statusLoader) {
+        htmx.trigger(statusLoader, 'load');
+    }
+}, 30000);
+</script>
+{% endblock %}

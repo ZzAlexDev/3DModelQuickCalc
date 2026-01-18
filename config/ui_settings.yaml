@@ -1,0 +1,98 @@
+# UI Configuration for 3DModelQuickCalc
+# Everything is configurable, no hardcode!
+
+app:
+  name: "3DModelQuickCalc"
+  version: "0.1.0"
+  description: "Web calculator for 3D parts parameters"
+  copyright_year: "2026"
+
+ui:
+  # CSS/JS Configuration
+  css_cdn: true  # Use Tailwind CDN (true) or local build (false)
+  htmx_enabled: true
+  alpine_enabled: false  # Enable if need complex interactivity
+  
+  htmx_config:
+    default_swap_style: "innerHTML"
+    timeout: 30000
+  
+  # Colors (CSS Variables)
+  colors:
+    primary: "#3B82F6"    # Blue
+    secondary: "#10B981"  # Green  
+    accent: "#8B5CF6"     # Purple
+    background: "#F9FAFB" # Gray-50
+    surface: "#FFFFFF"    # White
+    text: "#1F2937"       # Gray-800
+  
+  # Features Toggles
+  features:
+    user_profile: true
+    settings: true
+    quick_actions: true
+    
+    # Configurable Feature Cards
+    cards:
+      - id: "upload"
+        icon: "📁"
+        title: "Upload STL"
+        description: "Upload your 3D model files in STL format"
+        actions:
+          - label: "Upload File"
+            endpoint: "/app/upload"
+            target: "#modal-content"
+            classes: "bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800"
+      
+      - id: "calculate"
+        icon: "🧮"
+        title: "Calculate"
+        description: "Get instant calculations of volume, weight, and cost"
+        actions:
+          - label: "Quick Calculate"
+            endpoint: "/api/calculate/quick"
+            target: "#dynamic-content"
+            classes: "bg-gradient-to-r from-green-600 to-emerald-600 text-white hover:from-green-700 hover:to-emerald-700"
+      
+      - id: "analyze"
+        icon: "📊"
+        title: "Analyze"
+        description: "Advanced analysis and comparison tools"
+        actions:
+          - label: "View Analysis"
+            endpoint: "/app/analysis"
+            target: "#dynamic-content"
+            classes: "bg-gradient-to-r from-purple-600 to-violet-600 text-white hover:from-purple-700 hover:to-violet-700"
+    
+    # Quick Actions (floating buttons)
+    quick_actions:
+      - id: "refresh"
+        icon: "🔄"
+        tooltip: "Refresh Data"
+        endpoint: "/api/refresh"
+        target: "#dynamic-content"
+        classes: "bg-blue-500 text-white hover:bg-blue-600"
+      
+      - id: "export"
+        icon: "📥"
+        tooltip: "Export Results"
+        endpoint: "/app/export"
+        target: "#modal-content"
+        classes: "bg-green-500 text-white hover:bg-green-600"
+  
+  # Links Configuration
+  links:
+    docs: true
+    health: true
+    github: "https://github.com/yourusername/3DModelQuickCalc"
+  
+  # Auto-refresh
+  auto_refresh:
+    enabled: true
+    interval: 30000  # 30 seconds
+
+# Localization settings
+i18n:
+  default_language: "en"
+  supported_languages: ["en", "ru"]
+  auto_detect: true
