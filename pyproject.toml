@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "3dmodelquickcalc"
+version = "0.1.0"
+description = "Web calculator for 3D parts parameters"
+authors = ["Your Name <your.email@example.com>"]
+readme = "README.md"
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+[tool.poetry.group.dev.dependencies]
+# Пока пусто, добавим позже
+
+# ВАЖНО: Указываем правильные пути к пакетам
+[tool.poetry]
+packages = [
+    { include = "3dmqc", from = "src" },
+]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
